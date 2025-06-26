@@ -32,7 +32,7 @@ struct ContentView: View {
                             }
                         )
                 }
-
+                
                 VStack {
                     Spacer()
                     
@@ -68,8 +68,7 @@ struct ContentView: View {
                     }
                     .padding(.bottom, 50)
                 }
-
-                // Vstack
+                
                 VStack {
                     HStack {
                         Text(manager.isPaused ? "PAUSED" : "60 FPS")
@@ -87,9 +86,7 @@ struct ContentView: View {
                 }
                 
             }
-            
         }
-        
     }
 }
 
