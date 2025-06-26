@@ -10,7 +10,7 @@ import Photos
 import UIKit
 import SwiftUI
 
-//
+
 // MARK:  Adding Zoom in,
 // MARK: Getting Photo
 // MARK: Output format
@@ -18,9 +18,11 @@ import SwiftUI
 // MARK: Flash
 // MARK: Auto pause after 10 minutes
 // MARK: Ability to toggle camera
+// MARK: Zoom in and zoom out
 
+// MARK: make the CameraConfiguration Injectable
 
-class CameraManager: NSObject, ObservableObject {
+class CameraManager: NSObject, CameraManaging {
     
     @Published var isSessionRunning = false
     @Published var isPaused = false
