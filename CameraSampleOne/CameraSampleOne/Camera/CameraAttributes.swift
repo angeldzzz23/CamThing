@@ -8,7 +8,7 @@
 import Foundation
 import AVKit
 
-
+// MARK: Camera manager attributes
 struct CameraManagerAttributes {
     var capturedMedia: CameraMedia? = nil
     var error: CameraError? = nil
@@ -25,6 +25,7 @@ struct CameraManagerAttributes {
 }
 
 
+// MARK: camera errors
 public enum CameraError: Error {
     case cameraPermissionsNotGranted
     case cannotSetupInput, cannotSetupOutput
