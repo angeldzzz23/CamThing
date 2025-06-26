@@ -16,7 +16,11 @@ struct ContentView: View {
         CameraContainerView { manager in
             
             CameraOverlay(manager: manager)
-            
+                .onChange(of: manager.capturedImage) { oldValue, newValue in
+                    if let newValuer = newValue {
+                        print("New Image Captured: \(newValuer)")
+                    }
+                }
         }
         
     }

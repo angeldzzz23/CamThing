@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 protocol CameraManaging: ObservableObject {
     var isSessionRunning: Bool { get }
     var isPaused: Bool { get }

@@ -10,7 +10,7 @@ import Photos
 import UIKit
 import SwiftUI
 
-
+// MARK: Capture ed photo
 // MARK:  Adding Zoom in,
 // MARK: Getting Photo
 // MARK: Output format
@@ -19,7 +19,6 @@ import SwiftUI
 // MARK: Auto pause after 10 minutes
 // MARK: Ability to toggle camera
 // MARK: Zoom in and zoom out
-
 // MARK: make the CameraConfiguration Injectable
 
 class CameraManager: NSObject, CameraManaging {
@@ -29,10 +28,12 @@ class CameraManager: NSObject, CameraManaging {
     @Published var showAlert = false
     @Published var alertMessage = ""
     
-    
+    @Published var capturedImage: UIImage?
+
     let session = AVCaptureSession()
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var photoOutput: AVCapturePhotoOutput?
+    
     
     override init() {
         super.init()
@@ -166,6 +167,7 @@ class CameraManager: NSObject, CameraManaging {
     }
     
     private func setupCamera() {
+        //Remove this out of here as well,  by default this is set to high but should be injectible
         session.sessionPreset = .high
         
         // Add video input
@@ -194,6 +196,10 @@ class CameraManager: NSObject, CameraManaging {
         if session.canAddOutput(photoOutput!) {
             session.addOutput(photoOutput!)
         }
+    }
+    
+    func clearCaptureImage() {
+        capturedImage = nil
     }
     
     private func configureFor60FPS(device: AVCaptureDevice) throws {
@@ -262,16 +268,19 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
         }
         
         // Save to photo library
-        PHPhotoLibrary.shared().performChanges {
-            PHAssetChangeRequest.creationRequestForAsset(from: image)
-        } completionHandler: { success, error in
-            DispatchQueue.main.async {
-                if success {
-                    // Optional: Show success feedback
-                } else {
-                    self.showAlert(message: "Failed to save photo: \(error?.localizedDescription ?? "Unknown error")")
-                }
-            }
+        DispatchQueue.main.async {
+            self.capturedImage = image
         }
+//        PHPhotoLibrary.shared().performChanges {
+//            PHAssetChangeRequest.creationRequestForAsset(from: image)
+//        } completionHandler: { success, error in
+//            DispatchQueue.main.async {
+//                if success {
+//                    // Optional: Show success feedback
+//                } else {
+//                    self.showAlert(message: "Failed to save photo: \(error?.localizedDescription ?? "Unknown error")")
+//                }
+//            }
+//        }
     }
 }
