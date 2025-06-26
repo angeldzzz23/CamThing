@@ -20,7 +20,7 @@ struct CameraManagerAttributes {
     var mirrorOutput: Bool = false
     var orientationLocked: Bool = false
     var userBlockedScreenRotation: Bool = false
-//    var deviceOrientation: AVCaptureVideoOrientation = .portrait
+// Shit is depricated. Need to find somethigng else var deviceOrientation: AVCaptureVideoOrientation = .portrait
     var frameOrientation: CGImagePropertyOrientation = .right
 }
 

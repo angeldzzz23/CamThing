@@ -21,7 +21,8 @@ struct ContentView: View {
                         print("New Image Captured: \(newValuer)")
                     }
                 }
-        }
+            }
+            // After We take photo
         
     }
     
