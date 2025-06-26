@@ -15,7 +15,7 @@ struct CameraOverlay: View {
         ZStack {
             if manager.isPaused {
                 Rectangle()
-                    .fill(Color.black.opacity(0)) // adding this. 
+                    .fill(Color.black.opacity(0.7)) // adding this. 
                     .ignoresSafeArea()
                     .overlay(
                         VStack {
