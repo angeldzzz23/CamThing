@@ -10,11 +10,6 @@ import Photos
 import UIKit
 import SwiftUI
 
-// MARK: captured photo
-// MARK: Adding Zoom in,
-// MARK: Getting Photo
-// MARK: Output format selection (JPEG, HEIF, RAW if supported)
-
 class CameraManager: NSObject, CameraManaging {
     
     // this takes in all the camera attributes
@@ -439,16 +434,3 @@ class CameraManager: NSObject, CameraManaging {
     }
 }
  
-extension UIImage {
-    func mirrored() -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { context in
-            // Flip the context horizontally
-            context.cgContext.translateBy(x: size.width, y: 0)
-            context.cgContext.scaleBy(x: -1, y: 1)
-            
-            // Draw the image
-            draw(at: .zero)
-        }
-    }
-}

@@ -50,6 +50,17 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
     }
 }
 
-private extension CameraManager {
-
+extension UIImage {
+    func mirrored() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            // Flip the context horizontally
+            context.cgContext.translateBy(x: size.width, y: 0)
+            context.cgContext.scaleBy(x: -1, y: 1)
+            
+            // Draw the image
+            draw(at: .zero)
+        }
+    }
 }
+
