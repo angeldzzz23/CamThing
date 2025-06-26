@@ -8,5 +8,12 @@
 import Foundation
 
 struct CameraManagerAttributes {
-    
+    var capturedMedia: CameraMedia? = nil
+    var error: CameraError? = nil
+}
+
+
+public enum CameraError: Error {
+    case cameraPermissionsNotGranted
+    case cannotSetupInput, cannotSetupOutput
 }
