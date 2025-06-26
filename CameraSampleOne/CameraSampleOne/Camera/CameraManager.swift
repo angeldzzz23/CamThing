@@ -10,32 +10,33 @@ import Photos
 import UIKit
 import SwiftUI
 
-// MARK: Captureed photo
-// MARK:  Adding Zoom in,
+// MARK: captured photo
+// MARK: Adding Zoom in,
 // MARK: Getting Photo
-// MARK: Output format:
 // MARK: Output format selection (JPEG, HEIF, RAW if supported)
-// MARK: Flash
-// MARK: Ability to toggle camera
-// MARK: Zoom in and zoom out
-// MARK: make the CameraConfiguration Injectable
 
 class CameraManager: NSObject, CameraManaging {
     
-    // continues attributes
-    @Published var attributes: CameraManagerAttributes = .init()
+    // this takes in all the camera attributes
+    @Published var attributes: CameraManagerAttributes = .init() {
+        didSet {
+            handleAttributeChanges(oldValue: oldValue)
+        }
+    }
     
     @Published var isSessionRunning = false
     @Published var isPaused = false
-    @Published var showAlert = false
+    @Published var isShowingAlert = false
     @Published var alertMessage = ""
     
     @Published var capturedImage: UIImage?
+    
+    // Image capture callback
+    var onImageCaptured: ((UIImage) -> Void)?
 
     let session = AVCaptureSession()
-    private var videoDeviceInput: AVCaptureDeviceInput?
-    private var photoOutput: AVCapturePhotoOutput?
-    
+    var videoDeviceInput: AVCaptureDeviceInput?
+    var photoOutput: AVCapturePhotoOutput?
     
     override init() {
         super.init()
@@ -47,37 +48,181 @@ class CameraManager: NSObject, CameraManaging {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Attribute Change Handling
+    
+    private func handleAttributeChanges(oldValue: CameraManagerAttributes) {
+        // Handle camera position change
+        if oldValue.cameraPosition != attributes.cameraPosition {
+            switchCamera()
+        }
+        
+        // Handle resolution change
+        if oldValue.resolution != attributes.resolution {
+            updateResolution()
+        }
+        
+        // Handle zoom factor change
+        if oldValue.zoomFactor != attributes.zoomFactor {
+            updateZoom()
+        }
+        
+        // Handle frame rate change
+        if oldValue.frameRate != attributes.frameRate {
+            updateFrameRate()
+        }
+        
+    }
+    
+    // MARK: - Camera Configuration Methods
+    private func switchCamera() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.session.beginConfiguration()
+            
+            // Remove current input
+            if let currentInput = self.videoDeviceInput {
+                self.session.removeInput(currentInput)
+            }
+            
+            // Get the desired camera position
+            let position: AVCaptureDevice.Position = self.attributes.cameraPosition == .back ? .back : .front
+            
+            guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) else {
+                self.session.commitConfiguration()
+                DispatchQueue.main.async {
+                    self.showAlert(message: "Could not find \(position == .back ? "back" : "front") camera")
+                }
+                return
+            }
+            
+            do {
+                let newInput = try AVCaptureDeviceInput(device: videoDevice)
+                
+                if self.session.canAddInput(newInput) {
+                    self.session.addInput(newInput)
+                    self.videoDeviceInput = newInput
+                    
+                    // Configure frame rate if possible
+                    try self.configureFrameRate(device: videoDevice)
+                    
+                    // Apply current zoom level to new camera
+                    self.applyZoom(to: videoDevice)
+                }
+                
+            } catch {
+                DispatchQueue.main.async {
+                    self.showAlert(message: "Could not switch camera: \(error.localizedDescription)")
+                }
+            }
+            
+            self.session.commitConfiguration()
+        }
+    }
+    
+    private func updateResolution() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.session.beginConfiguration()
+            self.session.sessionPreset = self.attributes.resolution
+            self.session.commitConfiguration()
+        }
+    }
+    
+    private func updateZoom() {
+        guard let device = videoDeviceInput?.device else { return }
+        applyZoom(to: device)
+    }
+    
+    private func updateFrameRate() {
+        guard let device = videoDeviceInput?.device else { return }
+        
+        do {
+            try configureFrameRate(device: device)
+        } catch {
+            DispatchQueue.main.async {
+                self.showAlert(message: "Could not update frame rate: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func applyZoom(to device: AVCaptureDevice) {
+        do {
+            try device.lockForConfiguration()
+            
+            let maxZoom = device.activeFormat.videoMaxZoomFactor
+            let zoomFactor = min(max(attributes.zoomFactor, 1.0), maxZoom)
+            device.videoZoomFactor = zoomFactor
+            
+            // Update the actual zoom factor in attributes if it was clamped
+            if zoomFactor != attributes.zoomFactor {
+                DispatchQueue.main.async {
+                    self.attributes.zoomFactor = zoomFactor
+                }
+            }
+            
+            device.unlockForConfiguration()
+        } catch {
+            DispatchQueue.main.async {
+                self.showAlert(message: "Could not adjust zoom: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // MARK: - Public Configuration Methods
+    func updateCameraPosition(_ position: CameraPosition) {
+        attributes.cameraPosition = position
+    }
+    
+    func updateResolution(_ resolution: AVCaptureSession.Preset) {
+        attributes.resolution = resolution
+    }
+    
+    func updateZoomFactor(_ zoom: CGFloat) {
+        attributes.zoomFactor = zoom
+    }
+    
+    func updateFlashMode(_ flashMode: CameraFlashMode) {
+        attributes.flashMode = flashMode
+    }
+    
+    func updateMirrorOutput(_ mirror: Bool) {
+        attributes.mirrorOutput = mirror
+    }
+    
+    func updateFrameRate(_ frameRate: Int32) {
+        attributes.frameRate = frameRate
+    }
+    
+    // MARK: - Session Observers
     private func setupSessionObservers() {
-          if #available(iOS 18.0, *) {
-              NotificationCenter.default.addObserver(
-                  self,
-                  selector: #selector(sessionDidStartRunning),
-                  name: AVCaptureSession.didStartRunningNotification,
-                  object: session
-              )
-              
-              NotificationCenter.default.addObserver(
-                  self,
-                  selector: #selector(sessionDidStopRunning),
-                  name: AVCaptureSession.didStopRunningNotification,
-                  object: session
-              )
-          } else {
-              NotificationCenter.default.addObserver(
-                  self,
-                  selector: #selector(sessionDidStartRunning),
-                  name: .AVCaptureSessionDidStartRunning,
-                  object: session
-              )
-              
-              NotificationCenter.default.addObserver(
-                  self,
-                  selector: #selector(sessionDidStopRunning),
-                  name: .AVCaptureSessionDidStopRunning,
-                  object: session
-              )
-          }
-      }
+        if #available(iOS 18.0, *) {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sessionDidStartRunning),
+                name: AVCaptureSession.didStartRunningNotification,
+                object: session
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sessionDidStopRunning),
+                name: AVCaptureSession.didStopRunningNotification,
+                object: session
+            )
+        } else {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sessionDidStartRunning),
+                name: .AVCaptureSessionDidStartRunning,
+                object: session
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(sessionDidStopRunning),
+                name: .AVCaptureSessionDidStopRunning,
+                object: session
+            )
+        }
+    }
     
     @objc private func sessionDidStartRunning() {
         DispatchQueue.main.async {
@@ -91,7 +236,7 @@ class CameraManager: NSObject, CameraManaging {
         }
     }
     
-    //TODO: this should be Out of here
+    // MARK: - Permissions
     func requestPermissions() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -104,9 +249,14 @@ class CameraManager: NSObject, CameraManaging {
                     DispatchQueue.global().async {
                         self.startSession()
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self.attributes.error = .cameraPermissionsNotGranted
+                    }
                 }
             }
         case .denied, .restricted:
+            attributes.error = .cameraPermissionsNotGranted
             showAlert(message: "Camera access is required to use this app")
         @unknown default:
             break
@@ -122,6 +272,7 @@ class CameraManager: NSObject, CameraManaging {
         }
     }
     
+    // MARK: - Session Control
     func togglePause() {
         if isPaused {
             resumeCamera()
@@ -168,12 +319,15 @@ class CameraManager: NSObject, CameraManaging {
         }
     }
     
+    // MARK: - Camera Setup
     private func setupCamera() {
-        //Remove this out of here as well,  by default this is set to high but should be injectible
-        session.sessionPreset = .high
+        // Use resolution from attributes
+        session.sessionPreset = attributes.resolution
         
-        // Add video input
-        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        // Add video input based on attributes
+        let position: AVCaptureDevice.Position = attributes.cameraPosition == .back ? .back : .front
+        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) else {
+            attributes.error = .cannotSetupInput
             showAlert(message: "Could not find camera")
             return
         }
@@ -185,10 +339,14 @@ class CameraManager: NSObject, CameraManaging {
                 session.addInput(videoDeviceInput!)
             }
             
-            // Configure for 60fps
-            try configureFor60FPS(device: videoDevice)
+            // Configure frame rate
+            try configureFrameRate(device: videoDevice)
+            
+            // Apply initial zoom
+            applyZoom(to: videoDevice)
             
         } catch {
+            attributes.error = .cannotSetupInput
             showAlert(message: "Could not create video device input: \(error.localizedDescription)")
             return
         }
@@ -197,24 +355,29 @@ class CameraManager: NSObject, CameraManaging {
         photoOutput = AVCapturePhotoOutput()
         if session.canAddOutput(photoOutput!) {
             session.addOutput(photoOutput!)
+        } else {
+            attributes.error = .cannotSetupOutput
         }
     }
     
     func clearCaptureImage() {
         capturedImage = nil
+        attributes.capturedMedia = nil
     }
     
-    private func configureFor60FPS(device: AVCaptureDevice) throws {
+    private func configureFrameRate(device: AVCaptureDevice) throws {
         try device.lockForConfiguration()
         
-        // Find the best format that supports 60fps
+        let targetFrameRate = attributes.frameRate
+        
+        // Find the best format that supports the target frame rate
         let formats = device.formats
         var bestFormat: AVCaptureDevice.Format?
         var bestFrameRateRange: AVFrameRateRange?
         
         for format in formats {
             for range in format.videoSupportedFrameRateRanges {
-                if range.maxFrameRate >= 60.0 {
+                if range.maxFrameRate >= Double(targetFrameRate) && range.minFrameRate <= Double(targetFrameRate) {
                     if bestFormat == nil ||
                        CMVideoFormatDescriptionGetDimensions(format.formatDescription).width >
                        CMVideoFormatDescriptionGetDimensions(bestFormat!.formatDescription).width {
@@ -227,8 +390,29 @@ class CameraManager: NSObject, CameraManaging {
         
         if let format = bestFormat, let _ = bestFrameRateRange {
             device.activeFormat = format
-            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 60)
-            device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: 60)
+            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: targetFrameRate)
+            device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: targetFrameRate)
+        } else {
+            // Fallback: try to find any format that supports a reasonable frame rate
+            for format in formats {
+                for range in format.videoSupportedFrameRateRanges {
+                    if range.maxFrameRate >= 30.0 {
+                        device.activeFormat = format
+                        let clampedFrameRate = min(Double(targetFrameRate), range.maxFrameRate)
+                        let clampedFrameRateInt32 = Int32(clampedFrameRate)
+                        device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: clampedFrameRateInt32)
+                        device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: clampedFrameRateInt32)
+                        
+                        // Update attributes with actual frame rate if it was clamped
+                        if clampedFrameRateInt32 != targetFrameRate {
+                            DispatchQueue.main.async {
+                                self.attributes.frameRate = clampedFrameRateInt32
+                            }
+                        }
+                        break
+                    }
+                }
+            }
         }
         
         device.unlockForConfiguration()
@@ -244,45 +428,20 @@ class CameraManager: NSObject, CameraManaging {
         }
     }
     
-    func capturePhoto() {
-        guard let photoOutput = photoOutput, !isPaused else { return }
-        
-        let settings = AVCapturePhotoSettings()
-        settings.flashMode = .auto
-        
-        photoOutput.capturePhoto(with: settings, delegate: self)
-    }
+    // MARK: - Photo Capture
     
-    private func showAlert(message: String) {
+    
+    func showAlert(message: String) {
         DispatchQueue.main.async {
             self.alertMessage = message
-            self.showAlert = true
+            self.isShowingAlert = true
         }
     }
 }
-
-extension CameraManager: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        guard let imageData = photo.fileDataRepresentation(),
-              let image = UIImage(data: imageData) else {
-            showAlert(message: "Failed to capture photo")
-            return
-        }
-        
-        // Save to photo library
-        DispatchQueue.main.async {
-            self.capturedImage = image
-        }
-//        PHPhotoLibrary.shared().performChanges {
-//            PHAssetChangeRequest.creationRequestForAsset(from: image)
-//        } completionHandler: { success, error in
-//            DispatchQueue.main.async {
-//                if success {
-//                    // Optional: Show success feedback
-//                } else {
-//                    self.showAlert(message: "Failed to save photo: \(error?.localizedDescription ?? "Unknown error")")
-//                }
-//            }
-//        }
+ 
+extension UIImage {
+    func mirrored() -> UIImage {
+        guard let cgImage = self.cgImage else { return self }
+        return UIImage(cgImage: cgImage, scale: scale, orientation: .upMirrored)
     }
 }
