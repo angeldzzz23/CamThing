@@ -1,4 +1,4 @@
-# Camthing — A Minimal, Customizable Camera App
+# Camthing — A Minimal, Camera App
 
 
 -  **Live camera preview** using `AVCaptureSession`
