@@ -17,6 +17,11 @@ struct CameraManagerAttributes {
     var zoomFactor: CGFloat = 1.0
     var flashMode: CameraFlashMode = .off
     var resolution: AVCaptureSession.Preset = .hd1920x1080
+    var mirrorOutput: Bool = false
+    var orientationLocked: Bool = false
+    var userBlockedScreenRotation: Bool = false
+//    var deviceOrientation: AVCaptureVideoOrientation = .portrait
+    var frameOrientation: CGImagePropertyOrientation = .right
 }
 
 
