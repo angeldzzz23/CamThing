@@ -91,45 +91,8 @@ struct ContentView: View {
     }
 }
 
-// this is how we would use the container View
 
-struct CameraContainerView<Content: View>: View {
-    @StateObject private var cameraManager = CameraManager()
-    @ViewBuilder var content: (_ manager: CameraManager) -> Content
 
-    var body: some View {
-        ZStack {
-            CameraPreview(session: cameraManager.session)
-                .ignoresSafeArea()
-            content(cameraManager)
-        }
-        .onAppear {
-            cameraManager.requestPermissions()
-        }
-        .alert("Camera Error", isPresented: $cameraManager.showAlert) {
-            Button("OK") { }
-        } message: {
-            Text(cameraManager.alertMessage)
-        }
-    }
-}
-
-struct CameraPreview: UIViewRepresentable {
-    let session: AVCaptureSession
-    
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: UIScreen.main.bounds)
-        
-        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.frame = view.frame
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
-        
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {}
-}
 
 
 
