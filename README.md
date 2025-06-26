@@ -8,11 +8,11 @@
 
 - ✅ Built using SwiftUI + UIKit interoperability
 
-**Purpose of Building this: **
+**Purpose of Building this:**
 I wanted a clean, modular camera UI in SwiftUI that I could use in future projects — something simple enough to understand and customize, but powerful enough to build on.
 
 
-**Example Usage: **
+**Example Usage:**
 
 CameraContainerView { manager in
     CameraOverlay(manager: manager)
