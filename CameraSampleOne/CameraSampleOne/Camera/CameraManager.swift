@@ -10,6 +10,15 @@ import Photos
 import UIKit
 import SwiftUI
 
+//
+// MARK:  Adding Zoom in,
+// MARK: Getting Photo
+// MARK: Output format
+// MARK: Output format selection (JPEG, HEIF, RAW if supported)
+// MARK: Flash
+// MARK: Auto pause after 10 minutes
+// MARK: Ability to toggle camera
+
 
 class CameraManager: NSObject, ObservableObject {
     
@@ -77,6 +86,7 @@ class CameraManager: NSObject, ObservableObject {
         }
     }
     
+    //TODO: this should be Out of here
     func requestPermissions() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
