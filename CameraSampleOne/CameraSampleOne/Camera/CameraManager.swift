@@ -441,7 +441,14 @@ class CameraManager: NSObject, CameraManaging {
  
 extension UIImage {
     func mirrored() -> UIImage {
-        guard let cgImage = self.cgImage else { return self }
-        return UIImage(cgImage: cgImage, scale: scale, orientation: .upMirrored)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            // Flip the context horizontally
+            context.cgContext.translateBy(x: size.width, y: 0)
+            context.cgContext.scaleBy(x: -1, y: 1)
+            
+            // Draw the image
+            draw(at: .zero)
+        }
     }
 }

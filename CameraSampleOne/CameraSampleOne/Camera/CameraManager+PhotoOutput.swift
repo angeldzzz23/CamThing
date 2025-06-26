@@ -51,5 +51,5 @@ extension CameraManager: AVCapturePhotoCaptureDelegate {
 }
 
 private extension CameraManager {
-    
+
 }
