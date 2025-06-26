@@ -10,18 +10,20 @@ import Photos
 import UIKit
 import SwiftUI
 
-// MARK: Capture ed photo
+// MARK: Captureed photo
 // MARK:  Adding Zoom in,
 // MARK: Getting Photo
-// MARK: Output format
+// MARK: Output format:
 // MARK: Output format selection (JPEG, HEIF, RAW if supported)
 // MARK: Flash
-// MARK: Auto pause after 10 minutes
 // MARK: Ability to toggle camera
 // MARK: Zoom in and zoom out
 // MARK: make the CameraConfiguration Injectable
 
 class CameraManager: NSObject, CameraManaging {
+    
+    // continues attributes
+    @Published var attributes: CameraManagerAttributes = .init()
     
     @Published var isSessionRunning = false
     @Published var isPaused = false
