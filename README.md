@@ -6,7 +6,7 @@
 -  **Capture photos** and save to library
 -  **Modular architecture** (`CameraManager`, `CameraContainerView`)
 
-- ✅ Built using SwiftUI + UIKit interoperability
+- Built using SwiftUI + UIKit interoperability
 
 **Purpose of Building this:**
 
