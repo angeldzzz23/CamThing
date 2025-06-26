@@ -12,16 +12,18 @@ import Photos
 struct ContentView: View {
     
     var body: some View {
+//        AdvancedCameraView()
+        CameraView()
         
-        CameraContainerView { manager in
-            
-            CameraOverlay(manager: manager)
-                .onChange(of: manager.capturedImage) { oldValue, newValue in
-                    if let newValuer = newValue {
-                        print("New Image Captured: \(newValuer)")
-                    }
-                }
-            }
+//        CameraContainerView { manager in
+//            
+//            CameraOverlay(manager: manager)
+//                .onChange(of: manager.capturedImage) { oldValue, newValue in
+//                    if let newValuer = newValue {
+//                        print("New Image Captured: \(newValuer)")
+//                    }
+//                }
+//            }
             // After We take photo
         
     }
@@ -121,7 +123,7 @@ struct CameraContainerWithoutViews: View {
         .onAppear {
             cameraManager.requestPermissions()
         }
-        .alert("Camera Error", isPresented: $cameraManager.showAlert) {
+        .alert("Camera Error", isPresented: $cameraManager.isShowingAlert) {
             Button("OK") { }
         } message: {
             Text(cameraManager.alertMessage)

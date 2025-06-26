@@ -8,23 +8,24 @@
 import Foundation
 import AVKit
 
-
+// MARK: Camera manager attributes
 struct CameraManagerAttributes {
     var capturedMedia: CameraMedia? = nil
     var error: CameraError? = nil
     var outputType: CameraOutputType = .photo
     var cameraPosition: CameraPosition = .back
     var zoomFactor: CGFloat = 1.0
+    var frameRate: Int32 = 30
     var flashMode: CameraFlashMode = .off
     var resolution: AVCaptureSession.Preset = .hd1920x1080
     var mirrorOutput: Bool = false
     var orientationLocked: Bool = false
     var userBlockedScreenRotation: Bool = false
-// Shit is depricated. Need to find somethigng else var deviceOrientation: AVCaptureVideoOrientation = .portrait
     var frameOrientation: CGImagePropertyOrientation = .right
 }
 
 
+// MARK: camera errors
 public enum CameraError: Error {
     case cameraPermissionsNotGranted
     case cannotSetupInput, cannotSetupOutput
@@ -34,7 +35,6 @@ public enum CameraError: Error {
 // MARK: Camera Output Type
 public enum CameraOutputType: CaseIterable {
     case photo
-    case video
 }
 
 // MARK: Camera Position
@@ -48,12 +48,6 @@ public enum CameraFlashMode: CaseIterable {
     case off
     case on
     case auto
-}
-
-// MARK: Camera Light Mode
-public enum CameraLightMode: CaseIterable {
-    case off
-    case on
 }
 
 // MARK: Camera HDR Mode

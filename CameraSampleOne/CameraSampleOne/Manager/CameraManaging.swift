@@ -10,7 +10,7 @@ import SwiftUI
 protocol CameraManaging: ObservableObject {
     var isSessionRunning: Bool { get }
     var isPaused: Bool { get }
-    var showAlert: Bool { get }
+    var isShowingAlert: Bool { get }
     var alertMessage: String { get }
 
     func requestPermissions()
