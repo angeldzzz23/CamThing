@@ -8,7 +8,8 @@ import SwiftUI
 import AVKit
 import Photos
 
-/// MARK: Crea
+/// Sample Code on how to use the library
+/// 
 struct AdvancedCameraView: View {
     
     @State private var showingSettings = false
@@ -23,6 +24,7 @@ struct AdvancedCameraView: View {
                 
                 
                 HStack {
+                    
                     Button("Switch Camera") {
                         manager.updateCameraPosition(
                             manager.attributes.cameraPosition == .back ? .front : .back

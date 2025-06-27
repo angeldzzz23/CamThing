@@ -5,7 +5,6 @@
 //  Created by angel zambrano on 6/26/25.
 //
 
-
 import Foundation
 import AVKit
 import SwiftUI
@@ -97,49 +96,4 @@ extension PhotoCaptureManager: AVCapturePhotoCaptureDelegate {
             }
         }
     }
-     
 }
-
-/*
- func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-      
-      // Move heavy processing to background thread
-      imageProcessingQueue.async { [weak self] in
-          guard let self = self else { return }
-          
-          // Handle error case
-          guard error == nil else {
-              DispatchQueue.main.async {
-                  self.cameraManager?.showAlert(message: "Failed to capture photo: \(error?.localizedDescription ?? "Unknown error")")
-                  self.cameraManager?.isCapturing = false
-              }
-              return
-          }
-          
-          // Process image data on background thread
-          guard let imageData = photo.fileDataRepresentation(),
-                let image = UIImage(data: imageData) else {
-              DispatchQueue.main.async {
-                  self.cameraManager?.showAlert(message: "Failed to capture photo")
-                  self.cameraManager?.isCapturing = false
-              }
-              return
-          }
-          
-          // Apply mirroring if needed (this is expensive)
-          let finalImage = self.cameraManager?.attributes.mirrorOutput == true ? image.mirrored() : image
-          
-          // Extract metadata (also expensive)
-          let metadata = photo.metadata
-          let cameraMedia = CameraMedia(image: finalImage, metadata: metadata, timestamp: Date())
-          
-          // Update UI on main thread
-          DispatchQueue.main.async {
-              self.cameraManager?.capturedImage = finalImage
-              self.cameraManager?.attributes.capturedMedia = cameraMedia
-              self.cameraManager?.isCapturing = false // Re-enable capture
-              self.cameraManager?.onImageCaptured?(finalImage)
-          }
-      }
-  }
- */
