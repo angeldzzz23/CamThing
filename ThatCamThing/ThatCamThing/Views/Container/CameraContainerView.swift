@@ -8,46 +8,49 @@
 import SwiftUI
 
 // TODO: user an alternative to .onchange to add support for lower versions of iOS 17
-struct CameraContainerView: View {
+// TODO: user an alternative to .onchange to add support for lower versions of iOS 17
+struct CameraContainerView<Overlay: CameraOverlayView>: View {
     
-    @StateObject private var cameraManager = CameraManager()
+    @StateObject private var cameraManager: CameraManager
     
     let onImageCapturedCallback: ((UIImage) -> Void)?
     let onCameraStateChanged: ((CameraManager) -> Void)?
     let customErrorHandler: ((CameraError) -> Void)?
     let defaultAttributes: CameraManagerAttributes
     
-    // Store the overlay type
-    private var overlayType: (any CameraOverlayView.Type)?
+    // Store the overlay creation closure
+    private let createOverlay: (CameraManager) -> Overlay
     
     init(
         attributes: CameraManagerAttributes,
         onImageCaptured: ((UIImage) -> Void)? = nil,
         onStateChanged: ((CameraManager) -> Void)? = nil,
         errorHandler: ((CameraError) -> Void)? = nil
-    ) {
+    ) where Overlay == DefaultCameraOverlay<CameraManager> {
         self.defaultAttributes = attributes
         self._cameraManager = StateObject(wrappedValue: CameraManager(initialAttributes: attributes))
         self.onImageCapturedCallback = onImageCaptured
         self.onCameraStateChanged = onStateChanged
         self.customErrorHandler = errorHandler
-        self.overlayType = nil
+        self.createOverlay = { manager in
+            DefaultCameraOverlay(cameraControl: manager) as! Overlay
+        }
     }
     
-    // Private init for overlay type
+    // Private init for custom overlay
     private init(
         attributes: CameraManagerAttributes,
         onImageCaptured: ((UIImage) -> Void)?,
         onStateChanged: ((CameraManager) -> Void)?,
         errorHandler: ((CameraError) -> Void)?,
-        overlayType: (any CameraOverlayView.Type)?
+        createOverlay: @escaping (CameraManager) -> Overlay
     ) {
         self.defaultAttributes = attributes
         self._cameraManager = StateObject(wrappedValue: CameraManager(initialAttributes: attributes))
         self.onImageCapturedCallback = onImageCaptured
         self.onCameraStateChanged = onStateChanged
         self.customErrorHandler = errorHandler
-        self.overlayType = overlayType
+        self.createOverlay = createOverlay
     }
     
     var body: some View {
@@ -55,12 +58,8 @@ struct CameraContainerView: View {
             CameraPreview(session: cameraManager.session)
                 .ignoresSafeArea()
             
-            // Use overlay if specified, otherwise use default
-            if let overlayType = overlayType {
-                AnyView(overlayType.init(manager: cameraManager))
-            } else {
-                DefaultCameraOverlay(manager: cameraManager)
-            }
+            // Create the overlay using the closure
+            createOverlay(cameraManager)
         }
         .setErrorScreen(DefaultErrorScreen.self)
         .onAppear {
@@ -100,17 +99,68 @@ struct CameraContainerView: View {
     }
 }
 
-
-
-
 extension CameraContainerView {
-    func setOverlayScreen<T: CameraOverlayView>(_ overlayType: T.Type) -> some View {
-        return CameraContainerView(
+    func setOverlayScreen<T: CameraOverlayView>(_ overlayType: T.Type) -> CameraContainerView<T>
+     where T.Control == CameraManager {
+         return CameraContainerView<T>(
+             attributes: defaultAttributes,
+             onImageCaptured: onImageCapturedCallback,
+             onStateChanged: onCameraStateChanged,
+             errorHandler: customErrorHandler,
+             createOverlay: { manager in
+                 T(cameraControl: manager)
+             }
+         )
+     }
+    
+    /// Set a callback for when an image is captured
+    func onImageCaptured(_ callback: @escaping (UIImage) -> Void) -> CameraContainerView<Overlay> {
+        CameraContainerView<Overlay>(
+            attributes: defaultAttributes,
+            onImageCaptured: callback,
+            onStateChanged: onCameraStateChanged,
+            errorHandler: customErrorHandler,
+            createOverlay: createOverlay
+        )
+    }
+    
+    /// Set a callback for when camera state changes (e.g., session starts)
+    func onCameraStateChanged(_ callback: @escaping (CameraManager) -> Void) -> CameraContainerView<Overlay> {
+        CameraContainerView<Overlay>(
+            attributes: defaultAttributes,
+            onImageCaptured: onImageCapturedCallback,
+            onStateChanged: callback,
+            errorHandler: customErrorHandler,
+            createOverlay: createOverlay
+        )
+    }
+    
+    /// Set a custom error handler
+    func onError(_ handler: @escaping (CameraError) -> Void) -> CameraContainerView<Overlay> {
+        CameraContainerView<Overlay>(
             attributes: defaultAttributes,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: onCameraStateChanged,
-            errorHandler: customErrorHandler,
-            overlayType: overlayType
+            errorHandler: handler,
+            createOverlay: createOverlay
         )
     }
+    
+    /// Configure initial camera settings
+    func cameraConfiguration(_ configuration: @escaping (CameraManager) -> Void) -> CameraContainerView<Overlay> {
+        let newView = CameraContainerView<Overlay>(
+            attributes: defaultAttributes,
+            onImageCaptured: onImageCapturedCallback,
+            onStateChanged: { manager in
+                configuration(manager)
+                onCameraStateChanged?(manager)
+            },
+            errorHandler: customErrorHandler,
+            createOverlay: createOverlay
+        )
+        return newView
+    }
 }
+
+// MARK: - Convenience typealias for default usage
+typealias DefaultCameraContainerView = CameraContainerView<DefaultCameraOverlay<CameraManager>>

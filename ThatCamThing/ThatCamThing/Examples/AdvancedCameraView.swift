@@ -16,11 +16,14 @@ struct AdvancedCameraView: View {
     
     var body: some View {
         
-        CameraContainerView(
-            attributes: CameraManagerAttributes(cameraPosition: .front)
-        )
-        .setOverlayScreen(DefaultCameraOverlay.self)
-        .setErrorScreen(CustomCameraErrorScreen.self)
+        CameraContainerView(attributes: .init())
+            .setOverlayScreen(DefaultCameraOverlay.self)
+            
+//        CameraContainerView(
+//            attributes: CameraManagerAttributes(cameraPosition: .front)
+//        )
+//        .setOverlayScreen(DefaultCameraOverlay.self)
+//        .setErrorScreen(CustomCameraErrorScreen.self)
         
     }
     

@@ -8,133 +8,76 @@
 import SwiftUI
 import AVKit
 
-protocol CameraOverlayView: View {
-    var manager: CameraManager { get }
-    
-    init(manager: CameraManager)
+// MARK: - Camera Actions Interface
+protocol CameraActions {
+    func switchCamera()
+    func toggleFlashMode()
+    func cycleResolution()
+    func cycleFrameRate()
+    func toggleMirrorOutput()
+    func updateZoomFactor2(_ factor: Float)
+    func capturePhoto()
 }
 
+// MARK: - Camera State Interface
+protocol CameraState: ObservableObject {
+    var cameraPosition: CameraPosition { get }
+    var flashMode: CameraFlashMode { get }
+    var resolution: AVCaptureSession.Preset { get }
+    var frameRate: Int32 { get }
+    var mirrorOutput: Bool { get }
+    var zoomFactor: Float { get set }
+}
 
-struct DefaultCameraOverlay: CameraOverlayView {
-    @ObservedObject var manager: CameraManager
+// MARK: - Combined Interface
+protocol CameraControl: CameraActions, CameraState {}
 
-    init(manager: CameraManager) {
-        self.manager = manager
+// MARK: - Camera Manager Extension
+extension CameraManager: CameraControl {
+   
+    
+    
+    func updateZoomFactor2(_ factor: Float) {
+        updateZoomFactor(CGFloat(factor))
     }
     
-    var body: some View {
-        VStack {
+    var cameraPosition: CameraPosition { attributes.cameraPosition }
+    var flashMode: CameraFlashMode { attributes.flashMode }
+    var resolution: AVCaptureSession.Preset { attributes.resolution }
+    var frameRate: Int32 { attributes.frameRate }
+    var mirrorOutput: Bool { attributes.mirrorOutput }
+    
+    var zoomFactor: Float {
+        get {
+            Float(attributes.zoomFactor)
             
-            Spacer()
-            
-            HStack {
-                
-                Button("Switch Camera") {
-                    manager.updateCameraPosition(
-                        manager.attributes.cameraPosition == .back ? .front : .back
-                    )
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(8)
-                
-                Spacer()
-                
-                // Flash mode toggle
-                Button("Flash: \(flashModeText(manager.attributes.flashMode))") {
-                    let nextFlashMode = nextFlashModeValue(manager.attributes.flashMode)
-                    manager.updateFlashMode(nextFlashMode)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(8)
-            }
-            .padding(.horizontal)
-            
-            HStack {
-                // Resolution toggle
-                Button("Resolution: \(resolutionText(manager.attributes.resolution))") {
-                    let nextResolution = nextResolutionValue(manager.attributes.resolution)
-                    manager.updateResolution(nextResolution)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(8)
-                
-                Spacer()
-                
-                // Frame rate toggle
-                Button("FPS: \(manager.attributes.frameRate)") {
-                    let nextFrameRate = nextFrameRateValue(manager.attributes.frameRate)
-                    manager.updateFrameRate(nextFrameRate)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(8)
-            }
-            .padding(.horizontal)
-            
-            HStack {
-                // Mirror toggle
-                Button("Mirror: \(manager.attributes.mirrorOutput ? "ON" : "OFF")") {
-                    manager.updateMirrorOutput(!manager.attributes.mirrorOutput)
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(8)
-                
-                Spacer()
-            }
-            .padding(.horizontal)
-            
-            // Zoom slider
-            VStack {
-                Text("Zoom: \(String(format: "%.1f", manager.attributes.zoomFactor))x")
-                    .foregroundColor(.white)
-                
-                Slider(
-                    value: Binding(
-                        get: { manager.attributes.zoomFactor },
-                        set: { manager.updateZoomFactor($0) }
-                    ),
-                    in: 1...10.0,
-                    step: 0.5
-                )
-                .accentColor(.white)
-            }
-            .padding()
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(8)
-            .padding(.horizontal)
-            
-            // Capture button
-            Button(action: {
-                manager.capturePhoto()
-            }) {
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 70, height: 70)
-                    .overlay(
-                        Circle()
-                            .stroke(Color.black, lineWidth: 2)
-                            .frame(width: 60, height: 60)
-                    )
-            }
-            .padding(.bottom, 50)
+        }
+        set {
+            updateZoomFactor2(Float(newValue))
         }
     }
     
-    private func flashModeText(_ mode: CameraFlashMode) -> String {
-        switch mode {
-        case .off: return "OFF"
-        case .on: return "ON"
-        case .auto: return "AUTO"
-        }
+    func switchCamera() {
+        updateCameraPosition(attributes.cameraPosition == .back ? .front : .back)
+    }
+    
+    func toggleFlashMode() {
+        let nextMode = nextFlashModeValue(attributes.flashMode)
+        updateFlashMode(nextMode)
+    }
+    
+    func cycleResolution() {
+        let nextResolution = nextResolutionValue(attributes.resolution)
+        updateResolution(nextResolution)
+    }
+    
+    func cycleFrameRate() {
+        let nextFrameRate = nextFrameRateValue(attributes.frameRate)
+        updateFrameRate(nextFrameRate)
+    }
+    
+    func toggleMirrorOutput() {
+        updateMirrorOutput(!attributes.mirrorOutput)
     }
     
     private func nextFlashModeValue(_ current: CameraFlashMode) -> CameraFlashMode {
@@ -142,16 +85,6 @@ struct DefaultCameraOverlay: CameraOverlayView {
         case .off: return .on
         case .on: return .auto
         case .auto: return .off
-        }
-    }
-    
-    private func resolutionText(_ resolution: AVCaptureSession.Preset) -> String {
-        switch resolution {
-        case .hd1920x1080: return "1080p"
-        case .hd1280x720: return "720p"
-        case .vga640x480: return "VGA"
-        case .high: return "HIGH"
-        default: return "CUSTOM"
         }
     }
     
@@ -174,4 +107,134 @@ struct DefaultCameraOverlay: CameraOverlayView {
         }
     }
 }
+
+// MARK: - Updated Protocol
+protocol CameraOverlayView: View {
+    associatedtype Control: CameraControl
+    var cameraControl: Control { get }
     
+    init(cameraControl: Control)
+}
+
+// MARK: - Updated Implementation
+//
+struct DefaultCameraOverlay<Control: CameraControl>: CameraOverlayView {
+    @ObservedObject var cameraControl: Control
+
+    
+    init(cameraControl: Control) {
+        self.cameraControl = cameraControl
+    }
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            
+            HStack {
+                Button("Switch Camera") {
+                    cameraControl.switchCamera()
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(8)
+                
+                Spacer()
+                
+                Button("Flash: \(flashModeText(cameraControl.flashMode))") {
+                    cameraControl.toggleFlashMode()
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(8)
+            }
+            .padding(.horizontal)
+            
+            HStack {
+                Button("Resolution: \(resolutionText(cameraControl.resolution))") {
+                    cameraControl.cycleResolution()
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(8)
+                
+                Spacer()
+                
+                Button("FPS: \(cameraControl.frameRate)") {
+                    cameraControl.cycleFrameRate()
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(8)
+            }
+            .padding(.horizontal)
+            
+            HStack {
+                Button("Mirror: \(cameraControl.mirrorOutput ? "ON" : "OFF")") {
+                    cameraControl.toggleMirrorOutput()
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.7))
+                .cornerRadius(8)
+                
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            VStack {
+                Text("Zoom: \(String(format: "%.1f", cameraControl.zoomFactor))x")
+                    .foregroundColor(.white)
+                
+                Slider(
+                    value: Binding(
+                        get: { Float(cameraControl.zoomFactor) },
+                        set: { cameraControl.zoomFactor = Float(CGFloat($0)) }
+                    ),
+                    in: 1...10.0,
+                    step: 0.5
+                )
+                .accentColor(.white)
+            }
+            .padding()
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(8)
+            .padding(.horizontal)
+            
+            Button(action: {
+                cameraControl.capturePhoto()
+            }) {
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 70, height: 70)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.black, lineWidth: 2)
+                            .frame(width: 60, height: 60)
+                    )
+            }
+            .padding(.bottom, 50)
+        }
+    }
+    
+    private func flashModeText(_ mode: CameraFlashMode) -> String {
+        switch mode {
+        case .off: return "OFF"
+        case .on: return "ON"
+        case .auto: return "AUTO"
+        }
+    }
+    
+    private func resolutionText(_ resolution: AVCaptureSession.Preset) -> String {
+        switch resolution {
+        case .hd1920x1080: return "1080p"
+        case .hd1280x720: return "720p"
+        case .vga640x480: return "VGA"
+        case .high: return "HIGH"
+        default: return "CUSTOM"
+        }
+    }
+}
