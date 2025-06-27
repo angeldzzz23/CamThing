@@ -19,6 +19,7 @@ struct AdvancedCameraView: View {
         CameraContainerView(
             attributes: CameraManagerAttributes(cameraPosition: .front)
         ) { manager in
+            
             VStack {
                 
                 Spacer()
@@ -126,7 +127,6 @@ struct AdvancedCameraView: View {
         }
         .onImageCaptured { image in
             saveImageInGallery(image)
-            
         }
         .setErrorScreen(CustomCameraErrorScreen.self)
         
