@@ -122,6 +122,11 @@ struct AdvancedCameraView: View {
             
             
         }
+        .onImageCaptured { image in
+            
+            saveImageInGallery(image)
+            
+        }
         
     }
     
