@@ -56,7 +56,6 @@ struct CameraContainerView<Content: View>: View {
                 handleError(error)
             }
         }
-        
     }
     
     private func setupCameraManager() {
