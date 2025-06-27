@@ -17,7 +17,7 @@ Built using **SwiftUI + UIKit**, it’s simple to customize and extend — perfe
   - Mirror output (for selfies)
 - Built with SwiftUI + UIKit for full hardware access + modern UI
 
-## 🧠 Why I Built This
+## Why I Built This
 
 At **Answers**, we were running into serious **CPU usage issues** with our in-app camera — leading to performance drops and (more than a few) crashes.
 
@@ -27,8 +27,6 @@ Looking for a better foundation, I explored Apple’s official camera demo app �
 
 
 <img width="1113" alt="Screenshot 2025-06-25 at 5 17 39 PM" src="https://github.com/user-attachments/assets/caa8bd71-34e2-461d-b2c1-bf85142c24ce" />
-
-
 
 
 So I built my own:
