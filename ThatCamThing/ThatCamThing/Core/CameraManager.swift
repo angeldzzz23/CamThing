@@ -25,7 +25,6 @@ class CameraManager: NSObject, CameraManaging {
     @Published var capturedImage: UIImage?
     @Published var isCapturing: Bool = false
 
-    
     // MARK: - Callbacks
     var onImageCaptured: ((UIImage) -> Void)?
     
@@ -65,14 +64,6 @@ class CameraManager: NSObject, CameraManaging {
         
         self.init(initialAttributes: attributes)
     }
-    
-    
-    // MARK: - Initialization
-//    override init() {
-//        super.init()
-//        setupCamera()
-//        sessionManager.setupSessionObservers()
-//    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
