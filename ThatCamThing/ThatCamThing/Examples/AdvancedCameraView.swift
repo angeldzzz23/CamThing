@@ -18,7 +18,8 @@ struct AdvancedCameraView: View {
                            
         CameraContainerView(
             attributes: CameraManagerAttributes(cameraPosition: .front)
-        ) { manager in
+        )
+        { manager in
             
             VStack {
                 
@@ -99,7 +100,7 @@ struct AdvancedCameraView: View {
                             get: { manager.attributes.zoomFactor },
                             set: { manager.updateZoomFactor($0) }
                         ),
-                        in: 0.5...10.0,
+                        in: 1...10.0,
                         step: 0.5
                     )
                     .accentColor(.white)
