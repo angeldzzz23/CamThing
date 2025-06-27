@@ -17,6 +17,7 @@ struct CameraContainerView<Content: View>: View {
      let onCameraStateChanged: ((CameraManager) -> Void)?
      let customErrorHandler: ((CameraError) -> Void)?
     
+    // default initializer
     init(@ViewBuilder content: @escaping (_ manager: CameraManager) -> Content) {
         self.content = content
         self.onImageCapturedCallback = nil
@@ -30,6 +31,21 @@ struct CameraContainerView<Content: View>: View {
         onStateChanged: ((CameraManager) -> Void)?,
         errorHandler: ((CameraError) -> Void)?
     ) {
+        self.content = content
+        self.onImageCapturedCallback = onImageCaptured
+        self.onCameraStateChanged = onStateChanged
+        self.customErrorHandler = errorHandler
+    }
+    
+    // initializer with custom attributes
+    init(
+        attributes: CameraManagerAttributes,
+        @ViewBuilder content: @escaping (_ manager: CameraManager) -> Content,
+        onImageCaptured: ((UIImage) -> Void)? = nil,
+        onStateChanged: ((CameraManager) -> Void)? = nil,
+        errorHandler: ((CameraError) -> Void)? = nil
+    ) {
+        self._cameraManager = StateObject(wrappedValue: CameraManager(initialAttributes: attributes))
         self.content = content
         self.onImageCapturedCallback = onImageCaptured
         self.onCameraStateChanged = onStateChanged
