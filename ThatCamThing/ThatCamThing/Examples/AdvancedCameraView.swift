@@ -14,6 +14,9 @@ struct AdvancedCameraView: View {
     @State private var showingSettings = false
     
     var body: some View {
+//        CameraContainerView(attributes: CameraManagerAttributes(, content: <#T##(CameraManager) -> View##(CameraManager) -> View##(_ manager: CameraManager) -> View#>)
+
+                            
         CameraContainerView { manager in
             VStack {
                 Spacer()

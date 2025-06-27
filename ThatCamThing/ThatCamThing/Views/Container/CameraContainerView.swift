@@ -38,6 +38,7 @@ struct CameraContainerView<Content: View>: View {
     }
     
     // initializer with custom attributes
+    
     init(
         attributes: CameraManagerAttributes,
         @ViewBuilder content: @escaping (_ manager: CameraManager) -> Content,
