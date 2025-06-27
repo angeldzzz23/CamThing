@@ -18,6 +18,7 @@ struct CameraContainerView<Content: View>: View {
      let customErrorHandler: ((CameraError) -> Void)?
      let defaultAttributes: CameraManagerAttributes
     
+    
     init(
         attributes: CameraManagerAttributes,
         @ViewBuilder content: @escaping (_ manager: CameraManager) -> Content,
@@ -41,6 +42,7 @@ struct CameraContainerView<Content: View>: View {
             
             content(cameraManager)
         }
+        .setErrorScreen(DefaultErrorScreen.self)
         .onAppear {
             setupCameraManager()
         }
@@ -54,13 +56,13 @@ struct CameraContainerView<Content: View>: View {
                 handleError(error)
             }
         }
-        .alert("Camera Error", isPresented: $cameraManager.isShowingAlert) {
-            Button("OK") {
-                cameraManager.attributes.error = nil
-            }
-        } message: {
-            Text(cameraManager.alertMessage)
-        }
+//        .alert("Camera Error", isPresented: $cameraManager.isShowingAlert) {
+//            Button("OK") {
+//                cameraManager.attributes.error = nil
+//            }
+//        } message: {
+//            Text(cameraManager.alertMessage)
+//        }
     }
     
     private func setupCameraManager() {

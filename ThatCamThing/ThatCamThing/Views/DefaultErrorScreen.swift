@@ -22,7 +22,7 @@ struct DefaultErrorScreen: ErrorScreenView {
                 .font(.system(size: 50))
                 .foregroundColor(.red)
             
-            Text("Camera Error")
+            Text("Camera Error!!!!!!!!")
                 .font(.title2)
                 .fontWeight(.bold)
             
