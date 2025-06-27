@@ -130,7 +130,6 @@ struct AdvancedCameraView: View {
         }
         .setErrorScreen(CustomCameraErrorScreen.self)
         
-        
     }
     
     private func flashModeText(_ mode: CameraFlashMode) -> String {
