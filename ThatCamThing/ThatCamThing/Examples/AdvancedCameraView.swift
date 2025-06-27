@@ -9,7 +9,7 @@ import AVKit
 import Photos
 
 /// Sample Code on how to use the library
-/// 
+
 struct AdvancedCameraView: View {
     
     @State private var showingSettings = false
@@ -20,8 +20,8 @@ struct AdvancedCameraView: View {
             attributes: CameraManagerAttributes(cameraPosition: .front)
         ) { manager in
             VStack {
-                Spacer()
                 
+                Spacer()
                 
                 HStack {
                     
@@ -125,10 +125,10 @@ struct AdvancedCameraView: View {
             }
         }
         .onImageCaptured { image in
-            
             saveImageInGallery(image)
             
         }
+        .setErrorScreen(CustomCameraErrorScreen.self)
         
     }
     
