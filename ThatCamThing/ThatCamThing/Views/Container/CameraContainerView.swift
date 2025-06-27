@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// MARK: 
+#warning("use an alternative to .onchange to add support to lower versions")
 struct CameraContainerView<Content: View>: View {
     
     @StateObject private var cameraManager = CameraManager()
@@ -17,28 +17,6 @@ struct CameraContainerView<Content: View>: View {
      let onCameraStateChanged: ((CameraManager) -> Void)?
      let customErrorHandler: ((CameraError) -> Void)?
      let defaultAttributes: CameraManagerAttributes
-    
-    // default initializer
-//    init(@ViewBuilder content: @escaping (_ manager: CameraManager) -> Content) {
-//        self.content = content
-//        self.onImageCapturedCallback = nil
-//        self.onCameraStateChanged = nil
-//        self.customErrorHandler = nil
-//    }
-    
-//     init(
-//        content: @escaping (_ manager: CameraManager) -> Content,
-//        onImageCaptured: ((UIImage) -> Void)?,
-//        onStateChanged: ((CameraManager) -> Void)?,
-//        errorHandler: ((CameraError) -> Void)?
-//    ) {
-//        self.content = content
-//        self.onImageCapturedCallback = onImageCaptured
-//        self.onCameraStateChanged = onStateChanged
-//        self.customErrorHandler = errorHandler
-//    }
-    
-    // initializer with custom attributes
     
     init(
         attributes: CameraManagerAttributes,
