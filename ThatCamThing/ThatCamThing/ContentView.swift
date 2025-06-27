@@ -8,6 +8,9 @@
 import SwiftUI
 import Photos
 
+#warning("Add Error Validation")
+#warning("Add error UI, allow the user to set this") // Allow the user to set thi
+#warning("More modifiers..")
 struct ContentView: View {
     var body: some View {
         AdvancedCameraView()
