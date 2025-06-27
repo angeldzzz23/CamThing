@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#warning("use an alternative to .onchange to add support to lower versions")
+#warning("use an  .onchange an alternative to add support to lower versions of iOS 17")
 struct CameraContainerView<Content: View>: View {
     
     @StateObject private var cameraManager = CameraManager()
@@ -56,13 +56,7 @@ struct CameraContainerView<Content: View>: View {
                 handleError(error)
             }
         }
-//        .alert("Camera Error", isPresented: $cameraManager.isShowingAlert) {
-//            Button("OK") {
-//                cameraManager.attributes.error = nil
-//            }
-//        } message: {
-//            Text(cameraManager.alertMessage)
-//        }
+        
     }
     
     private func setupCameraManager() {
