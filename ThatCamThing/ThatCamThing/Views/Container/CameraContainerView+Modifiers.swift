@@ -10,10 +10,12 @@ import AVKit
 // MARK: - CameraContainerView Modifiers
 extension CameraContainerView {
     
+  
+    
     /// Set a callback for when an image is captured
     func onImageCaptured(_ callback: @escaping (UIImage) -> Void) -> CameraContainerView {
         CameraContainerView(
-            attributes: defaultAttributes, content: content,
+            attributes: defaultAttributes,
             onImageCaptured: callback,
             onStateChanged: onCameraStateChanged,
             errorHandler: customErrorHandler
@@ -24,7 +26,6 @@ extension CameraContainerView {
     func onCameraStateChanged(_ callback: @escaping (CameraManager) -> Void) -> CameraContainerView {
         CameraContainerView(
             attributes: defaultAttributes,
-            content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: callback,
             errorHandler: customErrorHandler
@@ -35,7 +36,6 @@ extension CameraContainerView {
     func onError(_ handler: @escaping (CameraError) -> Void) -> CameraContainerView {
         CameraContainerView(
             attributes: defaultAttributes,
-            content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: onCameraStateChanged,
             errorHandler: handler
@@ -46,7 +46,6 @@ extension CameraContainerView {
     func cameraConfiguration(_ configuration: @escaping (CameraManager) -> Void) -> CameraContainerView {
         let newView = CameraContainerView(
             attributes: defaultAttributes,
-            content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: { manager in
                 configuration(manager)
