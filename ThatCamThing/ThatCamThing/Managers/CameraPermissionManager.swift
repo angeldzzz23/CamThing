@@ -37,12 +37,16 @@ class CameraPermissionManager {
                 } else {
                     DispatchQueue.main.async {
                         self.cameraManager?.attributes.error = .cameraPermissionsNotGranted
+//                        self.cameraManager?.showAlert(message: "Camera access is required to use this app")
+                        NotificationCenter.default.post(name: .cameraError, object: CameraError.cameraPermissionsNotGranted)
                     }
                 }
             }
         case .denied, .restricted:
             cameraManager?.attributes.error = .cameraPermissionsNotGranted
-            cameraManager?.showAlert(message: "Camera access is required to use this app")
+//            cameraManager?.showAlert(message: "Camera access is required to use this app")
+            NotificationCenter.default.post(name: .cameraError, object: CameraError.cameraPermissionsNotGranted)
+
         @unknown default:
             break
         }
