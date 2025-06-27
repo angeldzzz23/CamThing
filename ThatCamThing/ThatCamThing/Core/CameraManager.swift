@@ -40,11 +40,39 @@ class CameraManager: NSObject, CameraManaging {
     lazy var configurationManager = CameraConfigurationManager(cameraManager: self)
     
     // MARK: - Initialization
-    override init() {
+    
+    init(initialAttributes: CameraManagerAttributes = .init()) {
+        self.attributes = initialAttributes
         super.init()
+        
         setupCamera()
         sessionManager.setupSessionObservers()
     }
+    
+    convenience init(
+        cameraPosition: CameraPosition = .back,
+        resolution: AVCaptureSession.Preset = .hd1920x1080,
+        flashMode: CameraFlashMode = .off,
+        frameRate: Int32 = 30,
+        zoomFactor: CGFloat = 1.0
+    ) {
+        var attributes = CameraManagerAttributes()
+        attributes.cameraPosition = cameraPosition
+        attributes.resolution = resolution
+        attributes.flashMode = flashMode
+        attributes.frameRate = frameRate
+        attributes.zoomFactor = zoomFactor
+        
+        self.init(initialAttributes: attributes)
+    }
+    
+    
+    // MARK: - Initialization
+//    override init() {
+//        super.init()
+//        setupCamera()
+//        sessionManager.setupSessionObservers()
+//    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
