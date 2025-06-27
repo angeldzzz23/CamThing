@@ -13,7 +13,7 @@ extension CameraContainerView {
     /// Set a callback for when an image is captured
     func onImageCaptured(_ callback: @escaping (UIImage) -> Void) -> CameraContainerView {
         CameraContainerView(
-            content: content,
+            attributes: defaultAttributes, content: content,
             onImageCaptured: callback,
             onStateChanged: onCameraStateChanged,
             errorHandler: customErrorHandler
@@ -23,6 +23,7 @@ extension CameraContainerView {
     /// Set a callback for when camera state changes (e.g., session starts)
     func onCameraStateChanged(_ callback: @escaping (CameraManager) -> Void) -> CameraContainerView {
         CameraContainerView(
+            attributes: defaultAttributes,
             content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: callback,
@@ -33,6 +34,7 @@ extension CameraContainerView {
     /// Set a custom error handler
     func onError(_ handler: @escaping (CameraError) -> Void) -> CameraContainerView {
         CameraContainerView(
+            attributes: defaultAttributes,
             content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: onCameraStateChanged,
@@ -43,6 +45,7 @@ extension CameraContainerView {
     /// Configure initial camera settings
     func cameraConfiguration(_ configuration: @escaping (CameraManager) -> Void) -> CameraContainerView {
         let newView = CameraContainerView(
+            attributes: defaultAttributes,
             content: content,
             onImageCaptured: onImageCapturedCallback,
             onStateChanged: { manager in

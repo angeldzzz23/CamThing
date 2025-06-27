@@ -16,26 +16,27 @@ struct CameraContainerView<Content: View>: View {
      let onImageCapturedCallback: ((UIImage) -> Void)?
      let onCameraStateChanged: ((CameraManager) -> Void)?
      let customErrorHandler: ((CameraError) -> Void)?
+     let defaultAttributes: CameraManagerAttributes
     
     // default initializer
-    init(@ViewBuilder content: @escaping (_ manager: CameraManager) -> Content) {
-        self.content = content
-        self.onImageCapturedCallback = nil
-        self.onCameraStateChanged = nil
-        self.customErrorHandler = nil
-    }
+//    init(@ViewBuilder content: @escaping (_ manager: CameraManager) -> Content) {
+//        self.content = content
+//        self.onImageCapturedCallback = nil
+//        self.onCameraStateChanged = nil
+//        self.customErrorHandler = nil
+//    }
     
-     init(
-        content: @escaping (_ manager: CameraManager) -> Content,
-        onImageCaptured: ((UIImage) -> Void)?,
-        onStateChanged: ((CameraManager) -> Void)?,
-        errorHandler: ((CameraError) -> Void)?
-    ) {
-        self.content = content
-        self.onImageCapturedCallback = onImageCaptured
-        self.onCameraStateChanged = onStateChanged
-        self.customErrorHandler = errorHandler
-    }
+//     init(
+//        content: @escaping (_ manager: CameraManager) -> Content,
+//        onImageCaptured: ((UIImage) -> Void)?,
+//        onStateChanged: ((CameraManager) -> Void)?,
+//        errorHandler: ((CameraError) -> Void)?
+//    ) {
+//        self.content = content
+//        self.onImageCapturedCallback = onImageCaptured
+//        self.onCameraStateChanged = onStateChanged
+//        self.customErrorHandler = errorHandler
+//    }
     
     // initializer with custom attributes
     
@@ -46,11 +47,13 @@ struct CameraContainerView<Content: View>: View {
         onStateChanged: ((CameraManager) -> Void)? = nil,
         errorHandler: ((CameraError) -> Void)? = nil
     ) {
+        self.defaultAttributes = attributes
         self._cameraManager = StateObject(wrappedValue: CameraManager(initialAttributes: attributes))
         self.content = content
         self.onImageCapturedCallback = onImageCaptured
         self.onCameraStateChanged = onStateChanged
         self.customErrorHandler = errorHandler
+       
     }
     
     var body: some View {

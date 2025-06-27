@@ -43,45 +43,20 @@ struct CameraMedia {
 }
 
 struct CameraManagerAttributes {
-    var capturedMedia: CameraMedia? = nil
-    var error: CameraError? = nil
-    var outputType: CameraOutputType
-    var cameraPosition: CameraPosition
-    var zoomFactor: CGFloat
-    var frameRate: Int32
-    var flashMode: CameraFlashMode
-    var resolution: AVCaptureSession.Preset
-    var mirrorOutput: Bool
-    var orientationLocked: Bool
-    var userBlockedScreenRotation: Bool
-    var frameOrientation: CGImagePropertyOrientation
-    
-    init(
-        outputType: CameraOutputType = .photo,
-        cameraPosition: CameraPosition = .back,
-        zoomFactor: CGFloat = 1.0,
-        frameRate: Int32 = 30,
-        flashMode: CameraFlashMode = .off,
-        resolution: AVCaptureSession.Preset = .hd1920x1080,
-        mirrorOutput: Bool = false,
-        orientationLocked: Bool = false,
-        userBlockedScreenRotation: Bool = false,
-        frameOrientation: CGImagePropertyOrientation = .right
-    ) {
-        self.outputType = outputType
-        self.cameraPosition = cameraPosition
-        self.zoomFactor = zoomFactor
-        self.frameRate = frameRate
-        self.flashMode = flashMode
-        self.resolution = resolution
-        self.mirrorOutput = mirrorOutput
-        self.orientationLocked = orientationLocked
-        self.userBlockedScreenRotation = userBlockedScreenRotation
-        self.frameOrientation = frameOrientation
-    }
+      var capturedMedia: CameraMedia? = nil
+      var error: CameraError? = nil
+      var outputType: CameraOutputType = .photo
+      var cameraPosition: CameraPosition = .back
+      var zoomFactor: CGFloat = 1.0
+      var frameRate: Int32 = 30
+      var flashMode: CameraFlashMode = .off
+      var resolution: AVCaptureSession.Preset = .hd1920x1080
+      var mirrorOutput: Bool = false
+      var orientationLocked: Bool = false
+      var userBlockedScreenRotation: Bool = false
+      var frameOrientation: CGImagePropertyOrientation = .up
     
    
-    
 }
 
 
