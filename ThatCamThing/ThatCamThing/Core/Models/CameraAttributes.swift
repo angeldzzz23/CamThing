@@ -43,8 +43,8 @@ struct CameraMedia {
 }
 
 struct CameraManagerAttributes {
-    var capturedMedia: CameraMedia?
-    var error: CameraError?
+    var capturedMedia: CameraMedia? = nil
+    var error: CameraError? = nil
     var outputType: CameraOutputType
     var cameraPosition: CameraPosition
     var zoomFactor: CGFloat
@@ -56,10 +56,7 @@ struct CameraManagerAttributes {
     var userBlockedScreenRotation: Bool
     var frameOrientation: CGImagePropertyOrientation
     
-    // Explicit initializer with default values
     init(
-        capturedMedia: CameraMedia? = nil,
-        error: CameraError? = nil,
         outputType: CameraOutputType = .photo,
         cameraPosition: CameraPosition = .back,
         zoomFactor: CGFloat = 1.0,
@@ -71,8 +68,6 @@ struct CameraManagerAttributes {
         userBlockedScreenRotation: Bool = false,
         frameOrientation: CGImagePropertyOrientation = .right
     ) {
-        self.capturedMedia = capturedMedia
-        self.error = error
         self.outputType = outputType
         self.cameraPosition = cameraPosition
         self.zoomFactor = zoomFactor
@@ -85,33 +80,9 @@ struct CameraManagerAttributes {
         self.frameOrientation = frameOrientation
     }
     
-    init(
-        capturedMedia: CameraMedia,
-        error: CameraError,
-        outputType: CameraOutputType ,
-        cameraPosition: CameraPosition ,
-        zoomFactor: CGFloat,
-        frameRate: Int32,
-        flashMode: CameraFlashMode ,
-        resolution: AVCaptureSession.Preset,
-        mirrorOutput: Bool ,
-        orientationLocked: Bool ,
-        userBlockedScreenRotation: Bool,
-        frameOrientation: CGImagePropertyOrientation
-    ) {
-        self.capturedMedia = capturedMedia
-        self.error = error
-        self.outputType = outputType
-        self.cameraPosition = cameraPosition
-        self.zoomFactor = zoomFactor
-        self.frameRate = frameRate
-        self.flashMode = flashMode
-        self.resolution = resolution
-        self.mirrorOutput = mirrorOutput
-        self.orientationLocked = orientationLocked
-        self.userBlockedScreenRotation = userBlockedScreenRotation
-        self.frameOrientation = frameOrientation
-    }
+   
     
 }
+
+
 
