@@ -8,6 +8,7 @@ import SwiftUI
 import AVKit
 import Photos
 
+/// MARK: Crea
 struct AdvancedCameraView: View {
     
     @State private var showingSettings = false

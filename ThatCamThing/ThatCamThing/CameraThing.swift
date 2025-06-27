@@ -11,7 +11,5 @@ import SwiftUI
 import Photos
 
 
-// MARK: - Usage Examples and Helper Views
-
 
 

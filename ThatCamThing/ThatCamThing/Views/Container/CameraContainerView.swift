@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: 
 struct CameraContainerView<Content: View>: View {
+    
     @StateObject private var cameraManager = CameraManager()
     @ViewBuilder var content: (_ manager: CameraManager) -> Content
     
