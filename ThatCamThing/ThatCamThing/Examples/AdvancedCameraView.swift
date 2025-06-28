@@ -17,9 +17,10 @@ struct AdvancedCameraView: View {
     var body: some View {
         CameraContainerView()
             .setOverlayScreen(DefaultCameraOverlay.self)
-//            .onImageCaptured { image in
+            .onImageCaptured { image in
                 
-//            }
+            }
+            .setErrorScreen(CustomCameraErrorScreen.self)
         
         
         
