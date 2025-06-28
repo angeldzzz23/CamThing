@@ -116,9 +116,9 @@ protocol CameraOverlayView: View {
     init(cameraControl: Control)
 }
 
-// MARK: - Updated Implementation
-//
+
 struct DefaultCameraOverlay<Control: CameraControl>: CameraOverlayView {
+    
     @ObservedObject var cameraControl: Control
 
     
@@ -238,3 +238,6 @@ struct DefaultCameraOverlay<Control: CameraControl>: CameraOverlayView {
         }
     }
 }
+
+
+

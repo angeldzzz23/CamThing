@@ -22,7 +22,7 @@ struct CameraContainerView<Overlay: CameraOverlayView>: View {
     private let createOverlay: (CameraManager) -> Overlay
     
     init(
-        attributes: CameraManagerAttributes,
+        attributes: CameraManagerAttributes = .init(),
         onImageCaptured: ((UIImage) -> Void)? = nil,
         onStateChanged: ((CameraManager) -> Void)? = nil,
         errorHandler: ((CameraError) -> Void)? = nil

@@ -15,62 +15,22 @@ struct AdvancedCameraView: View {
     @State private var showingSettings = false
     
     var body: some View {
-        
-        CameraContainerView(attributes: .init())
+        CameraContainerView()
             .setOverlayScreen(DefaultCameraOverlay.self)
-            .onImageCaptured { image in
-                saveImageInGallery(image)
-            }
+//            .onImageCaptured { image in
+                
+//            }
+        
+        
+        
+        
+//            .setOverlayScreen(DefaultCameraOverlay.self)
+//            .onImageCaptured { image in
+//                saveImageInGallery(image)
+//            }
         
     }
     
-    
-    // TODO: depricate this shit
-    
-    private func flashModeText(_ mode: CameraFlashMode) -> String {
-        switch mode {
-        case .off: return "OFF"
-        case .on: return "ON"
-        case .auto: return "AUTO"
-        }
-    }
-    
-    private func nextFlashModeValue(_ current: CameraFlashMode) -> CameraFlashMode {
-        switch current {
-        case .off: return .on
-        case .on: return .auto
-        case .auto: return .off
-        }
-    }
-    
-    private func resolutionText(_ resolution: AVCaptureSession.Preset) -> String {
-        switch resolution {
-        case .hd1920x1080: return "1080p"
-        case .hd1280x720: return "720p"
-        case .vga640x480: return "VGA"
-        case .high: return "HIGH"
-        default: return "CUSTOM"
-        }
-    }
-    
-    private func nextResolutionValue(_ current: AVCaptureSession.Preset) -> AVCaptureSession.Preset {
-        switch current {
-        case .hd1920x1080: return .hd1280x720
-        case .hd1280x720: return .vga640x480
-        case .vga640x480: return .high
-        default: return .hd1920x1080
-        }
-    }
-    
-    private func nextFrameRateValue(_ current: Int32) -> Int32 {
-        switch current {
-        case 24: return 30
-        case 30: return 60
-        case 60: return 120
-        case 120: return 24
-        default: return 30
-        }
-    }
     
     private func saveImageInGallery(_ image: UIImage) {
         PHPhotoLibrary.shared().performChanges {
