@@ -47,7 +47,7 @@ struct CameraManagerAttributes {
       var error: CameraError?
       var outputType = CameraOutputType.photo
       var cameraPosition = CameraPosition.back
-      var zoomFactor: CGFloat = 3.0
+      var zoomFactor: CGFloat = 1.0
       var frameRate: Int32 = 30
       var flashMode = CameraFlashMode.off
       var resolution = AVCaptureSession.Preset.hd1920x1080
