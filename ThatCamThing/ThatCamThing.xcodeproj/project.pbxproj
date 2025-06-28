@@ -255,6 +255,7 @@
 				DEVELOPMENT_TEAM = 7U844YAA3F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ThatCamThing;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Access to your camera";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -287,6 +288,7 @@
 				DEVELOPMENT_TEAM = 7U844YAA3F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ThatCamThing;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Access to your camera";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

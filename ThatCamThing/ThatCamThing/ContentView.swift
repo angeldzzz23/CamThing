@@ -8,8 +8,6 @@
 import SwiftUI
 import Photos
 
-#warning("More modifiers..")
-#warning("use main actor and ")
 struct ContentView: View {
     var body: some View {
         AdvancedCameraView()
