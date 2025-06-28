@@ -30,6 +30,15 @@ Looking for a better foundation, I explored Apple’s official camera demo app �
 - a minimal but powerful camera base I could trust and iterate on across projects.
 
 
+```swift
+  CameraContainerView()
+            .setOverlayScreen(DefaultCameraOverlay.self)
+            .onImageCaptured { image in
+                
+            }
+            .setErrorScreen(CustomCameraErrorScreen.self)
+  ```      
+
 <img width="1113" alt="Screenshot 2025-06-25 at 5 17 39 PM" src="https://github.com/user-attachments/assets/caa8bd71-34e2-461d-b2c1-bf85142c24ce" />
 
 So I built our own:
