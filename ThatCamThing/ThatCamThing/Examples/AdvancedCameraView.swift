@@ -15,20 +15,13 @@ struct AdvancedCameraView: View {
     @State private var showingSettings = false
     
     var body: some View {
+        
         CameraContainerView()
             .setOverlayScreen(DefaultCameraOverlay.self)
             .onImageCaptured { image in
                 
             }
             .setErrorScreen(CustomCameraErrorScreen.self)
-        
-        
-        
-        
-//            .setOverlayScreen(DefaultCameraOverlay.self)
-//            .onImageCaptured { image in
-//                saveImageInGallery(image)
-//            }
         
     }
     
