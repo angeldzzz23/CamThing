@@ -52,7 +52,15 @@ struct CameraManagerAttributes {
       var flashMode = CameraFlashMode.off
       var resolution = AVCaptureSession.Preset.hd1920x1080
       var mirrorOutput = false
-      var orientationLocked = false
-      var userBlockedScreenRotation = false
-      var frameOrientation = CGImagePropertyOrientation.up
+    
+    
+// TODO: 
+//    var orientationLocked = false
+//    var userBlockedScreenRotation = false
+//    var frameOrientation = CGImagePropertyOrientation.up
+//    var hdrMode: CameraHDRMode = .auto
+//    var deviceOrientation: AVCaptureVideoOrientation = .portrait
+//    var frameOrientation: CGImagePropertyOrientation = .right
+
 }
+
