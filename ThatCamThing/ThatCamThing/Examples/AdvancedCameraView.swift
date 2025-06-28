@@ -10,6 +10,7 @@ import Photos
 
 /// Sample Code on how to use the library
 
+// Example code
 struct AdvancedCameraView: View {
     
     @State private var showingSettings = false
@@ -24,7 +25,7 @@ struct AdvancedCameraView: View {
             .setErrorScreen(CustomCameraErrorScreen.self)
         
     }
-
+    
     private func saveImageInGallery(_ image: UIImage) {
         PHPhotoLibrary.shared().performChanges {
             PHAssetChangeRequest.creationRequestForAsset(from: image)
