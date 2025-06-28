@@ -43,21 +43,16 @@ struct CameraMedia {
 }
 
 struct CameraManagerAttributes {
-      var capturedMedia: CameraMedia? = nil
-      var error: CameraError? = nil
-      var outputType: CameraOutputType = .photo
-      var cameraPosition: CameraPosition = .back
+      var capturedMedia: CameraMedia?
+      var error: CameraError?
+      var outputType = CameraOutputType.photo
+      var cameraPosition = CameraPosition.back
       var zoomFactor: CGFloat = 1.0
       var frameRate: Int32 = 30
-      var flashMode: CameraFlashMode = .off
-      var resolution: AVCaptureSession.Preset = .hd1920x1080
-      var mirrorOutput: Bool = false
-      var orientationLocked: Bool = false
-      var userBlockedScreenRotation: Bool = false
-      var frameOrientation: CGImagePropertyOrientation = .up
-    
-   
+      var flashMode = CameraFlashMode.off
+      var resolution = AVCaptureSession.Preset.hd1920x1080
+      var mirrorOutput = false
+      var orientationLocked = false
+      var userBlockedScreenRotation = false
+      var frameOrientation = CGImagePropertyOrientation.up
 }
-
-
-
