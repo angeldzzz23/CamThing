@@ -81,7 +81,10 @@ extension CameraManager {
             object: nil,
             queue: .main
         ) { _ in
-            self.retrySetup()
+            Task { @MainActor in
+                self.retrySetup()
+            }
+          
         }
     }
     

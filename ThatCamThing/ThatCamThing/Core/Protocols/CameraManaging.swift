@@ -5,7 +5,7 @@
 //  Created by angel zambrano on 6/26/25.
 //
 import UIKit
-
+@MainActor
 protocol CameraManaging: ObservableObject {
     var isSessionRunning: Bool { get }
     var isPaused: Bool { get }

@@ -9,21 +9,22 @@ import SwiftUI
 import AVKit
 
 // MARK: - Main Camera Manager
+@MainActor
 class CameraManager: NSObject, CameraManaging {
     
     // MARK: - Published Properties
-    @Published var attributes: CameraManagerAttributes = .init() {
+    var attributes: CameraManagerAttributes = .init() {
         didSet {
             configurationManager.handleAttributeChanges(oldValue: oldValue, newValue: attributes)
         }
     }
     
-    @Published var isSessionRunning = false
-    @Published var isPaused = false
-    @Published var isShowingAlert = false
-    @Published var alertMessage = ""
-    @Published var capturedImage: UIImage?
-    @Published var isCapturing: Bool = false
+    var isSessionRunning = false
+     var isPaused = false
+     var isShowingAlert = false
+    var alertMessage = ""
+     var capturedImage: UIImage?
+     var isCapturing: Bool = false
 
     // MARK: - Callbacks
     var onImageCaptured: ((UIImage) -> Void)?

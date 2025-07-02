@@ -9,6 +9,7 @@ import Foundation
 import AVKit
 
 // MARK: - Configuration Management Extension
+@MainActor
 extension CameraManager: CameraConfigurationManaging {
     func updateCameraPosition(_ position: CameraPosition) {
         attributes.cameraPosition = position

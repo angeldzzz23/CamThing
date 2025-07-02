@@ -10,6 +10,7 @@ import SwiftUI
 import Photos
 
 // MARK: - Configuration Management
+@MainActor
 class CameraConfigurationManager {
     
     private weak var cameraManager: CameraManager?

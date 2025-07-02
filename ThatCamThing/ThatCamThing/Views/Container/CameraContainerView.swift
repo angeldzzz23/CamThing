@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO: user an alternative to .onchange to add support for lower versions of iOS 17
 struct CameraContainerView: View {
     
     @StateObject private var cameraManager = CameraManager()

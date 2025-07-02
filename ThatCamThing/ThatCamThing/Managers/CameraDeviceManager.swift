@@ -9,7 +9,7 @@ import AVKit
 import SwiftUI
 
 // MARK: - Device Management
-
+@MainActor
 class CameraDeviceManager {
     private let session: AVCaptureSession
     private weak var cameraManager: CameraManager?
@@ -47,7 +47,7 @@ class CameraDeviceManager {
     }
     
     func switchCamera(to position: CameraPosition) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task { @MainActor in
             self.session.beginConfiguration()
             
             if let currentInput = self.videoDeviceInput {

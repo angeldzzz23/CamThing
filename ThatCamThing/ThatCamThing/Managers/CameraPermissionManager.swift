@@ -10,6 +10,7 @@ import AVKit
 import Photos
 
 // MARK: - Permission Management
+@MainActor
 class CameraPermissionManager {
     private weak var cameraManager: CameraManager?
     
@@ -25,13 +26,13 @@ class CameraPermissionManager {
     private func requestCameraPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            DispatchQueue.global().async {
+            Task { @MainActor in
                 self.cameraManager?.sessionManager.startSession()
             }
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 if granted {
-                    DispatchQueue.global().async {
+                    Task { @MainActor in
                         self.cameraManager?.sessionManager.startSession()
                     }
                 } else {

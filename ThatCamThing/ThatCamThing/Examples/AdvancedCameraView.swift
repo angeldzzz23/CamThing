@@ -19,8 +19,12 @@ struct AdvancedCameraView: View {
         CameraContainerView(
             attributes: CameraManagerAttributes(cameraPosition: .front)
         )
+        .onImageCaptured { image in
+            
+        }
         .setOverlayScreen(DefaultCameraOverlay.self)
         .setErrorScreen(CustomCameraErrorScreen.self)
+    
         
     }
     

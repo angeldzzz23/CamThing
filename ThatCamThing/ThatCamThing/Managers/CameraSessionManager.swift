@@ -9,7 +9,7 @@ import AVKit
 import SwiftUI
 
 // MARK: - Session Management
-
+@MainActor
 class CameraSessionManager {
     
     private let session: AVCaptureSession
@@ -37,7 +37,10 @@ class CameraSessionManager {
             object: session,
             queue: .main
         ) { [weak self] _ in
-            self?.cameraManager?.isSessionRunning = true
+            Task { @MainActor in
+                self?.cameraManager?.isSessionRunning = true
+            }
+           
         }
         
         NotificationCenter.default.addObserver(
@@ -45,12 +48,15 @@ class CameraSessionManager {
             object: session,
             queue: .main
         ) { [weak self] _ in
-            self?.cameraManager?.isSessionRunning = false
+            Task { @MainActor in
+                self?.cameraManager?.isSessionRunning = false
+            }
+           
         }
     }
     
     func updateResolution(_ resolution: AVCaptureSession.Preset) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task { @MainActor in
             self.session.beginConfiguration()
             self.session.sessionPreset = resolution
             self.session.commitConfiguration()
@@ -59,10 +65,14 @@ class CameraSessionManager {
     
     func startSession() {
         guard !session.isRunning else { return }
-        session.startRunning()
-        
-        DispatchQueue.main.async {
-            self.cameraManager?.isPaused = false
+
+        let session = self.session // ✅ capture outside the closure
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            session.startRunning() // ✅ no longer accessing actor-isolated property
+            Task { @MainActor in
+                self.cameraManager?.isPaused = false
+            }
         }
     }
     
@@ -70,7 +80,7 @@ class CameraSessionManager {
         guard let cameraManager = cameraManager,
               cameraManager.isSessionRunning && !cameraManager.isPaused else { return }
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task { @MainActor in
             self.session.beginConfiguration()
             
             if let videoInput = cameraManager.deviceManager.videoDeviceInput {
@@ -89,7 +99,7 @@ class CameraSessionManager {
         guard let cameraManager = cameraManager,
               cameraManager.isPaused else { return }
         
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task { @MainActor in
             self.session.beginConfiguration()
             
             if let videoInput = cameraManager.deviceManager.videoDeviceInput {

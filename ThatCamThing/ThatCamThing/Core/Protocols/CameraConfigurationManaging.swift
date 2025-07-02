@@ -9,6 +9,7 @@ import AVKit
 
 /// A protocol that defines methods for configuring various camera settings.
 
+@MainActor
 protocol CameraConfigurationManaging {
     
     /// Updates the camera to use the specified position (e.g., front or back).
