@@ -24,7 +24,6 @@ struct AdvancedCameraView: View {
         }
         .setOverlayScreen(DefaultCameraOverlay.self)
         .setErrorScreen(CustomCameraErrorScreen.self)
-    
         
     }
     
